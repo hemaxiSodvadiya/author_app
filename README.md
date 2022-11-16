@@ -16,4 +16,3 @@ For help getting started with Flutter development, view the
 rs tutorials,
 samples, guidance on mobile development, and a full API re![Screenshot_2022-11-16-20-39-54-85](https://user-images.githubusercontent.com/111499619/202233281-8aadea6b-6193-41fe-9ed2-e80b6c2d832f.png)
 ference.
-![Screenshot_2022-11-16-20-44-45-47](https://user-images.githubusercontent.com/111499619/202233100-335babb2-3f8a-40e4-aa1f-17699c0cf503.png)
