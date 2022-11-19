@@ -57,6 +57,7 @@ class _EditAuthorState extends State<EditAuthor> {
           ],
         ),
       ),
+      /**/
       floatingActionButton: FloatingActionButton(
         backgroundColor: Style.accentColor,
         onPressed: () {
