@@ -27,6 +27,11 @@ Widget AuthorCard(Function()? onTap, QueryDocumentSnapshot doc) {
             doc['author_book'],
             style: Style.mainContext,
           ),
+          SizedBox(
+            height: 5,
+          ),
+          // Image.network(doc['image']),
+          Image.network(doc['image']),
         ],
       ),
     ),
