@@ -21,6 +21,7 @@ class _HomePageState extends State<HomePage> {
   static TextEditingController contextController = TextEditingController();
 
   int color_id = Random().nextInt(Style.cardsColor.length);
+  
 
   @override
   Widget build(BuildContext context) {
@@ -78,9 +79,11 @@ class _HomePageState extends State<HomePage> {
                           decoration: BoxDecoration(
                             color: Color(0xff607d8b),
                             borderRadius: BorderRadius.circular(10),
+                         
                           ),
                           child: Stack(
                             children: [
+                         
                               Image.network("${list[i]['image']}"),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,7 +116,6 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       IconButton(
                                         onPressed: () async {
-                                          //await CloudFirestoreHelper.cloudFirestoreHelper.updateRecord(id: list[i].id, updateData: updateData())
                                           updateData(id: list[i].id);
                                         },
                                         icon: Icon(Icons.edit),
