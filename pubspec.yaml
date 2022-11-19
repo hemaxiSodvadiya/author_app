@@ -40,6 +40,11 @@ dependencies:
   firebase_auth:
   cloud_firestore:
   google_fonts:
+  image_picker:
+  path_provider:
+  file_picker:
+  firebase_storage:
+  firebase_analytics:
 
 dev_dependencies:
   flutter_test:
