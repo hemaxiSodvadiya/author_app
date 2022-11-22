@@ -1,14 +1,12 @@
 import 'dart:convert';
 import 'dart:math';
 import 'dart:io';
-
-import 'package:author_app/helper/image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../global/global.dart';
 import 'color.dart';
 
 class EditAuthor extends StatefulWidget {
@@ -22,10 +20,12 @@ class _EditAuthorState extends State<EditAuthor> {
   TextEditingController titleController = TextEditingController();
   TextEditingController contextController = TextEditingController();
   int color_id = Random().nextInt(Style.cardsColor.length);
-  
+
   String imageUrl = '';
 
- 
+  // Uint8List? image;
+  // Uint8List? decodedImage;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,34 +101,43 @@ class _EditAuthorState extends State<EditAuthor> {
             SizedBox(
               height: 15,
             ),
-         
 
             Container(
               width: 200,
               child: ElevatedButton(
                 onPressed: () async {
+                  // ImagePicker imagePicker = ImagePicker();
+                  // XFile? file =
+                  //     await imagePicker.pickImage(source: ImageSource.camera);
+                  // print("**************************");
+                  // print("**************************");
+                  // print('${file?.path}');
+                  // print("**************************");
+                  // print("**************************");
+                  //
+                  // if (file == null) return;
+                  // String uniqueFileName =
+                  //     DateTime.now().millisecondsSinceEpoch.toString();
+                  //
+                  // Reference referenceRoot = FirebaseStorage.instance.ref();
+                  // Reference referenceDirImages = referenceRoot.child('images');
+                  // Reference referenceImageToUpload =
+                  //     referenceDirImages.child(uniqueFileName);
+                  //
+                  // try {
+                  //   await referenceImageToUpload.putFile(File(file!.path));
+                  //   imageUrl = await referenceImageToUpload.getDownloadURL();
+
                   ImagePicker imagePicker = ImagePicker();
                   XFile? file =
-                      await imagePicker.pickImage(source: ImageSource.camera);
-                  print("**************************");
-                  print("**************************");
-                  print('${file?.path}');
-                  print("**************************");
-                  print("**************************");
+                      await imagePicker.pickImage(source: ImageSource.gallery);
 
-                  if (file == null) return;
-                  String uniqueFileName =
-                      DateTime.now().millisecondsSinceEpoch.toString();
-
-                  Reference referenceRoot = FirebaseStorage.instance.ref();
-                  Reference referenceDirImages = referenceRoot.child('images');
-                  Reference referenceImageToUpload =
-                      referenceDirImages.child(uniqueFileName);
-
-                  try {
-                    await referenceImageToUpload.putFile(File(file!.path));
-                    imageUrl = await referenceImageToUpload.getDownloadURL();
-                  } catch (error) {}
+                  if (file != null) {
+                    File comImage =
+                        await FlutterNativeImage.compressImage(file.path);
+                    Global.image = await comImage.readAsBytes();
+                    Global.encodedImage = base64Encode(Global.image!);
+                  }
                 },
                 child: Row(
                   children: [
@@ -151,7 +160,7 @@ class _EditAuthorState extends State<EditAuthor> {
             "author_name": titleController.text,
             "author_book": contextController.text,
             "color_id": color_id,
-            "image": imageUrl,
+            "image": Global.encodedImage,
           }).then((value) {
             print(value.id);
             Navigator.of(context).pop();
