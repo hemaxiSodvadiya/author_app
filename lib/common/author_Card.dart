@@ -30,6 +30,7 @@ Widget AuthorCard(Function()? onTap, QueryDocumentSnapshot doc) {
           SizedBox(
             height: 5,
           ),
+          /**/
           // Image.network(doc['image']),
           Image.network(doc['image']),
         ],
