@@ -38,6 +38,7 @@ class CloudFirestoreHelper {
 
     await countersRef.doc('notes-counter').update({'counter': counter});
   }
+  /**/
 
   Stream<QuerySnapshot<Object?>> selectRecord() {
     connectWithNotessCollection();
