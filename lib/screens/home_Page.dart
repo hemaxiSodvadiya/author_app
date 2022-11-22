@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'dart:math';
-
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,7 +22,6 @@ class _HomePageState extends State<HomePage> {
   static TextEditingController contextController = TextEditingController();
 
   int color_id = Random().nextInt(Style.cardsColor.length);
-  
 
   @override
   Widget build(BuildContext context) {
@@ -67,60 +67,90 @@ class _HomePageState extends State<HomePage> {
                   if (snapshot.hasData) {
                     QuerySnapshot? data = snapshot.data;
                     List<QueryDocumentSnapshot> list = data!.docs;
+
                     return GridView.builder(
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2),
+                              crossAxisCount: 1),
                       shrinkWrap: true,
                       itemBuilder: (context, i) {
+                        if (list[i]["image"] != null) {
+                          Global.decodedImage = base64Decode(list[i]["image"]);
+                        } else {
+                          Global.decodedImage == null;
+                        }
                         return Container(
+                          height: 100,
                           padding: EdgeInsets.all(10),
                           margin: EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color: Color(0xff607d8b),
                             borderRadius: BorderRadius.circular(10),
-                         
                           ),
-                          child: Stack(
+                          child: Column(
                             children: [
-                         
-                              Image.network("${list[i]['image']}"),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              // Image.network("${list[i]['image']}"),
+                              Container(
+                                height: 180,
+                                width: double.infinity,
+                                child: Global.decodedImage == null
+                                    ? const Text(
+                                        "ADD IMAGE",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 10),
+                                      )
+                                    : Container(
+                                        height: 200,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: Colors.blueGrey
+                                              .withOpacity(0.1555),
+                                        ),
+                                        child: Image.memory(
+                                          Global.decodedImage!,
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                        ),
+                                      ),
+                                /* Image.network(
+                              documents[index]['image']!,
+                              fit: BoxFit.cover,
+                            )*/
+                              ),
+
+                              Text(
+                                "${list[i]['author_name']}",
+                                style: Style.mainTitle,
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Text(
+                                "${list[i]['author_book']}",
+                                style: Style.mainContext,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    "${list[i]['author_name']}",
-                                    style: Style.mainTitle,
+                                  IconButton(
+                                    onPressed: () async {
+                                      await CloudFirestoreHelper
+                                          .cloudFirestoreHelper
+                                          .deleteRecord(id: list[i].id);
+                                    },
+                                    icon: Icon(Icons.delete_outline_rounded),
                                   ),
-                                  SizedBox(
-                                    height: 8,
-                                  ),
-                                  Text(
-                                    "${list[i]['author_book']}",
-                                    style: Style.mainContext,
-                                  ),
-                                  Spacer(),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      IconButton(
-                                        onPressed: () async {
-                                          await CloudFirestoreHelper
-                                              .cloudFirestoreHelper
-                                              .deleteRecord(id: list[i].id);
-                                        },
-                                        icon:
-                                            Icon(Icons.delete_outline_rounded),
-                                      ),
-                                      IconButton(
-                                        onPressed: () async {
-                                          updateData(id: list[i].id);
-                                        },
-                                        icon: Icon(Icons.edit),
-                                      ),
-                                    ],
+                                  IconButton(
+                                    onPressed: () async {
+                                      updateData(id: list[i].id);
+                                    },
+                                    icon: Icon(Icons.edit),
                                   ),
                                 ],
                               ),
@@ -205,6 +235,7 @@ class _HomePageState extends State<HomePage> {
                           Map<String, dynamic> update = {
                             'note_title': Global.author,
                             'note_context': Global.book,
+                            'image': Global.encodedImage,
                           };
 
                           CloudFirestoreHelper.cloudFirestoreHelper
